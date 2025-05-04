@@ -5,123 +5,161 @@ import { TValidationError } from '../../../@types/oauth.type';
 import { AuthHeader } from '../components/auth-header';
 import { FormInput } from '../../../components/form/FormInput';
 import { RememberMe } from '../../../components/atoms/RememberMe';
-import { AuthButton } from '../components/auth-button';
-import { AuthFooter } from '../components/auth-footer';
-import axios from 'axios';
-import { toast } from 'react-toastify';
+import { AuthButton } from "../components/auth-button";
+import axios from "axios";
+import { toast } from "react-toastify";
+import { appTheme } from "../../../constant/theme";
+import useAppStore from "../../../store/useAppStore";
 
 const Login = () => {
-  const [formData, setFormData] = useState({
-    email: '',
-    password: '',
-  });
-  const [errors, setErrors] = useState<TValidationError>({email: "", password: ""});
-  const [isSubmitting, setIsSubmitting] = useState(false);
+	const { theme } = useAppStore(["theme"]);
+	const [formData, setFormData] = useState({
+		email: "",
+		password: "",
+	});
+	const [errors, setErrors] = useState<TValidationError>({
+		email: "",
+		password: "",
+	});
+	const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const validate = () => {
-    const newErrors: TValidationError = {email: "", password: ""};
-    if (!formData.email.trim()) newErrors.email = 'Email is required';
-    else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
-      newErrors.email = 'Invalid email format';
-    }
-    if (!formData.password) newErrors.password = 'Password is required';
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
-  };
-  
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    console.log("Validation result:", validate());
-    // if (!validate()) return;
-  
-    setIsSubmitting(true);
-    
-    try {
-      const response = await axios.post(
-        "http://localhost:3001/api/user/auth/login",
-        formData,
-        {
-          headers: {
-            "Content-Type": "application/json",
-          },
-          withCredentials: true,
-        }
-      );
-  
-      if (!response?.data?.success) {
-        toast.error(response.data.message);
-        return;
-      }
-  
-      toast.success(response.data.message);
-    } catch (error: any) {
-      console.error("Login error:", error);
-      toast.error(
-        error.response?.data?.message ||
-        error.message ||
-        "Login failed. Please try again."
-      );
-    } finally {
-      setIsSubmitting(false);
-    }
-  };
+	const validateForm = (): TValidationError => {
+		const newErrors: TValidationError = { email: "", password: "" };
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    setFormData(prev => ({ ...prev, [name]: value }));
-    if (errors[name as keyof TValidationError]) {
-      setErrors(prev => ({ ...prev, [name]: '' }));
-    }
-  };
+		if (!formData.email.trim()) {
+			newErrors.email = "Email is required";
+		} else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
+			newErrors.email = "Invalid email format";
+		}
 
-  return (
-    <div className="space-y-6">
-      <AuthHeader 
-        title="Welcome back" 
-        subtitle="Please enter your credentials to login" 
-      />
+		if (!formData.password.trim()) {
+			newErrors.password = "Password is required";
+		}
 
-      <form onSubmit={handleSubmit} className="space-y-4">
-        <FormInput
-          type="email"
-          name="email"
-          value={formData.email}
-          onChange={handleChange}
-          label="Email address"
-          error={errors.email}
-          placeholder="Enter your email"
-        />
+		return newErrors;
+	};
 
-        <FormInput
-          type="password"
-          name="password"
-          value={formData.password}
-          onChange={handleChange}
-          label="Password"
-          error={errors.password}
-          placeholder="Enter your password"
-        />
+	const handleSubmit = async (e: React.FormEvent) => {
+		e.preventDefault();
+		const validationErrors = validateForm();
 
-        <div className="flex items-center justify-between">
-          <RememberMe />
-          {/* <ForgotPasswordLink /> */}
-        </div>
+		setErrors(validationErrors);
+		const isValid = Object.values(validationErrors).every(
+			(error) => error === ""
+		);
 
-        <AuthButton
-          type="submit"
-          disabled={isSubmitting}
-          isLoading={isSubmitting}
-          label="Sign in"
-        />
-      </form>
+		if (!isValid) return;
 
-      <AuthFooter 
+		setIsSubmitting(true);
+
+		try {
+			const response = await axios.post(
+				"http://localhost:3001/api/user/auth/login",
+				formData,
+				{
+					headers: {
+						"Content-Type": "application/json",
+					},
+					withCredentials: true,
+				}
+			);
+
+			if (!response?.data?.success) {
+				toast.error(response.data.message);
+				return;
+			}
+
+			toast.success(response.data.message);
+		} catch (error: any) {
+			console.error("Login error:", error);
+			const errorMessage =
+				error.response?.data?.message ||
+				error.message ||
+				"Login failed. Please try again.";
+			toast.error(errorMessage);
+		} finally {
+			setIsSubmitting(false);
+		}
+	};
+
+	const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+		const { name, value } = e.target;
+		setFormData((prev) => ({ ...prev, [name]: value }));
+		if (errors[name as keyof TValidationError]) {
+			setErrors((prev) => ({ ...prev, [name]: "" }));
+		}
+	};
+
+	return (
+		<div
+			className="w-full max-w-lg mx-auto rounded-xl p-8"
+			style={{
+				backgroundColor: appTheme[theme].surface.primary,
+				border: `1px solid ${appTheme[theme].neutral[200]}`,
+			}}
+		>
+			<AuthHeader
+				theme={theme}
+				title="Welcome back"
+				subtitle="Please enter your credentials to login"
+			/>
+
+			<form onSubmit={handleSubmit} className="space-y-4">
+				<FormInput
+					theme={theme}
+					type="email"
+					name="email"
+					value={formData.email}
+					onChange={handleChange}
+					label="Email address"
+					error={errors.email}
+					placeholder="Enter your email"
+				/>
+
+				<FormInput
+					theme={theme}
+					type="password"
+					name="password"
+					value={formData.password}
+					onChange={handleChange}
+					label="Password"
+					error={errors.password}
+					placeholder="Enter your password"
+				/>
+
+				<div className="flex items-center justify-between">
+					<RememberMe theme={theme} />
+					{/* <ForgotPasswordLink /> */}
+				</div>
+
+				<AuthButton
+					type="submit"
+					disabled={isSubmitting}
+					isLoading={isSubmitting}
+					label="Sign in"
+				/>
+				<p
+					className="text-center mt-4 text-sm"
+					style={{ color: appTheme.text.secondary }}
+				>
+					Don't have an account?{" "}
+					<a
+						href="register"
+						className="font-medium hover:underline"
+						style={{ color: appTheme[theme].accent.primary }}
+					>
+						Register
+					</a>
+				</p>
+			</form>
+
+			{/* <AuthFooter 
         promptText="Don't have an account?"
         linkText="Sign up"
         linkPath="/auth/register"
-      />
-    </div>
-  );
+      /> */}
+		</div>
+	);
 };
 
 export default Login

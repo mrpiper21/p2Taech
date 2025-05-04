@@ -1,12 +1,28 @@
 @import "tailwindcss";
 @tailwind utilities;
 
-@layer utilities {
-  .card {
-    @apply rounded-xl p-8 shadow-lg;
+@media (max-width: 768px) {
+  .navigation-link {
+    padding: 12px 16px;
+    font-size: 0.9rem;
+  }
+  
+  input[type="text"] {
+    font-size: 16px; /* Prevent iOS zoom */
   }
 }
 
+
+/* Hide scrollbar for sidebar */
+@layer utilities {
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+}
 :root {
   font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;
@@ -26,6 +42,11 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
+@media (max-width: 768px) {
+  .md\\:hidden {
+    display: none;
+  }
+}
 /* a {
   font-weight: 500;
   color: #646cff;
