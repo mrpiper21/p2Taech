@@ -10,20 +10,19 @@ const DiscoverCourses = () => {
   
   // Example course data - replace with actual data from your backend
   const courses = [
-    {
-      id: 1,
-      course: "Introduction to Computer Science",
-      topic: "Data Structures and Algorithm",
-      tutor: "Sarah Johnson",
-      rating: 4.8,
-      price: 49.99,
-      duration: "6 hours",
-      lessons: 24,
-      difficulty: "Intermediate",
-      thumbnail: "https://example.com/blockchain-course.jpg",
-      tutorAvatar: "https://example.com/tutor-avatar.jpg"
-    },
-  ];
+		{
+			id: 1,
+			course: "Introduction to Computer Science",
+			topic: "Data Structures and Algorithm",
+			tutor: "Sarah Johnson",
+			rating: 4.8,
+			price: 49.99,
+			duration: "6 hours",
+			lessons: 24,
+			thumbnail: "https://example.com/blockchain-course.jpg",
+			tutorAvatar: "https://example.com/tutor-avatar.jpg",
+		},
+	];
 
   return (
     <div 
