@@ -42,7 +42,7 @@ const HomePage = () => {
 			<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4">
 				<StatCard
 					icon={<FiUsers />}
-					title="Students"
+					title="Peers Tutored"
 					value={stats.students}
 					theme={theme}
 				/>
@@ -55,7 +55,7 @@ const HomePage = () => {
 				<StatCard
 					icon={<FiDollarSign />}
 					title="Earnings"
-					value={`$${stats.earnings.toFixed(2)}`}
+					value={`GHS ${stats.earnings.toFixed(2)}`}
 					theme={theme}
 				/>
 				<StatCard
