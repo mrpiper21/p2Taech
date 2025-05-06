@@ -6,10 +6,11 @@ import { AuthHeader } from '../components/auth-header';
 import { FormInput } from '../../../components/form/FormInput';
 import { RememberMe } from '../../../components/atoms/RememberMe';
 import { AuthButton } from "../components/auth-button";
-import axios from "axios";
 import { toast } from "react-toastify";
 import { appTheme } from "../../../constant/theme";
 import useAppStore from "../../../store/useAppStore";
+import useUserStore from "../../../store/useUserStore";
+import { useNavigate } from "react-router-dom";
 
 const Login = () => {
 	const { theme } = useAppStore(["theme"]);
@@ -22,6 +23,7 @@ const Login = () => {
 		password: "",
 	});
 	const [isSubmitting, setIsSubmitting] = useState(false);
+	const navigate = useNavigate();
 
 	const validateForm = (): TValidationError => {
 		const newErrors: TValidationError = { email: "", password: "" };
@@ -41,41 +43,34 @@ const Login = () => {
 
 	const handleSubmit = async (e: React.FormEvent) => {
 		e.preventDefault();
-		const validationErrors = validateForm();
 
+		// Validate form
+		const validationErrors = validateForm();
 		setErrors(validationErrors);
+
+		// Check if form is valid
 		const isValid = Object.values(validationErrors).every(
 			(error) => error === ""
 		);
-
 		if (!isValid) return;
 
 		setIsSubmitting(true);
 
 		try {
-			const response = await axios.post(
-				"http://localhost:3001/api/user/auth/login",
-				formData,
-				{
-					headers: {
-						"Content-Type": "application/json",
-					},
-					withCredentials: true,
-				}
-			);
+			await useUserStore.getState().login(formData.email, formData.password);
 
-			if (!response?.data?.success) {
-				toast.error(response.data.message);
-				return;
-			}
+			toast.success("Login successful!");
 
-			toast.success(response.data.message);
+			// Redirect or perform other actions
+			navigate("/home");
 		} catch (error: any) {
 			console.error("Login error:", error);
+
 			const errorMessage =
 				error.response?.data?.message ||
 				error.message ||
 				"Login failed. Please try again.";
+
 			toast.error(errorMessage);
 		} finally {
 			setIsSubmitting(false);
