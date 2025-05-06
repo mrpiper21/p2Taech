@@ -96,6 +96,15 @@
   transform: translateX(100%);
   transition: transform 300ms ease-in;
 }
+
+@keyframes fade-slide {
+  0% { opacity: 0; transform: translateY(10px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+
+.animate-fade-slide {
+  animation: fade-slide 0.5s ease-out;
+}
 /* a {
   font-weight: 500;
   color: #646cff;

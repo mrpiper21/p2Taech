@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import useAppStore from '../../../../store/useAppStore'
 import { FiCalendar, FiClock, FiMapPin, FiCheck, FiUser } from "react-icons/fi";
 import { appTheme } from "../../../../constant/theme";
+import { SessionAttributes } from "../../../../components/cards/discover-course-card";
 
 const availableLocations = [
 	"Valco Hall",
@@ -24,13 +25,7 @@ const timeSlots = [
 ];
 
 interface BookLectureDrawerProps {
-	course?: {
-		course: string;
-		topic: string;
-		tutor: string;
-		price: number;
-		duration: string;
-	};
+	course?: SessionAttributes;
 }
 
 const BookLectureDrawer: React.FC<BookLectureDrawerProps> = ({ course }) => {
@@ -68,15 +63,15 @@ const BookLectureDrawer: React.FC<BookLectureDrawerProps> = ({ course }) => {
 						}}
 					>
 						<div className="flex flex-col gap-2">
-							<h3 className="text-lg font-semibold">{course.course}</h3>
-							<p className="text-sm opacity-75">{course.topic}</p>
+							<h3 className="text-lg font-semibold">{course.coursetitle}</h3>
+							<p className="text-sm opacity-75">{course.subjectitle}</p>
 							<div className="flex justify-between items-center">
 								<div className="flex items-center gap-2">
 									<FiUser
 										size={16}
 										style={{ color: appTheme[theme].accent.primary }}
 									/>
-									<span className="text-sm">{course.tutor}</span>
+									<span className="text-sm">{course.id}</span>
 								</div>
 								<span className="font-medium">GHS{course.price}</span>
 							</div>

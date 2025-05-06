@@ -1,28 +1,42 @@
+import { useQuery } from "@tanstack/react-query";
 import useAppStore from "../../../store/useAppStore";
 import { appTheme } from "../../../constant/theme";
 import { useModal } from "../../../hooks/useModal";
 import BookLectureDrawer from "./modals/BookLectureDrawer";
-import DiscoverCourseCard from "../../../components/cards/discover-course-card";
+import DiscoverCourseCard, {
+	SessionAttributes,
+} from "../../../components/cards/discover-course-card";
+import axios from "axios";
+import { baseUrl } from "../../../apis";
+import SkeletonLoader from "../../../components/loader/skeletonloader";
+import SlideShowText from "../../../components/atoms/animated-text";
 
 const DiscoverCourses = () => {
 	const { theme } = useAppStore(["theme"]);
 	const { openDrawer } = useModal();
 
-	// Example course data - replace with actual data from your backend
-	const courses = [
-		{
-			id: 1,
-			course: "Introduction to Computer Science",
-			topic: "Data Structures and Algorithm",
-			tutor: "Sarah Johnson",
-			rating: 4.8,
-			price: 49.99,
-			duration: "6 hours",
-			lessons: 24,
-			thumbnail: "https://example.com/blockchain-course.jpg",
-			tutorAvatar: "https://example.com/tutor-avatar.jpg",
+	// Fetch sessions using TanStack Query
+	const {
+		data: sessions,
+		isLoading,
+		isError,
+	} = useQuery({
+		queryKey: ["sessions"],
+		queryFn: async () => {
+			const response = await axios.get<{
+				success: boolean;
+				data: SessionAttributes[];
+				message: string;
+			}>(`${baseUrl}/sessions/all`);
+
+			if (!response.data.success) {
+				throw new Error(response.data.message || "Failed to fetch sessions");
+			}
+
+			return response.data.data;
 		},
-	];
+		staleTime: 1000 * 60 * 5,
+	});
 
 	return (
 		<div
@@ -32,43 +46,71 @@ const DiscoverCourses = () => {
 				color: appTheme.text.primary,
 			}}
 		>
-			<h1 className="text-3xl font-bold mb-8">Discover Courses</h1>
+			<div className="flex items-center justify-between">
+				<h1 className="text-3xl font-bold mb-8">Discover Courses</h1>
+				<SlideShowText theme={theme} />
+			</div>
 
 			{/* Search and Filters */}
-			<div className="mb-8 flex flex-col md:flex-row gap-4">
-				<input
-					type="text"
-					placeholder="Search courses..."
-					className="p-3 rounded-lg flex-1"
-					style={{
-						backgroundColor: appTheme[theme].surface.primary,
-						border: `1px solid ${appTheme[theme].neutral[200]}`,
-					}}
-				/>
-				<select
-					className="p-3 rounded-lg"
-					style={{
-						backgroundColor: appTheme[theme].surface.primary,
-						border: `1px solid ${appTheme[theme].neutral[200]}`,
-					}}
-				>
-					<option>All Categories</option>
-					<option>Blockchain</option>
-					<option>Programming</option>
-					<option>Mathematics</option>
-				</select>
-			</div>
-
-			{/* Courses Grid */}
-			<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-				{courses.map((course) => (
-					<DiscoverCourseCard
-						session={course}
-						theme={theme}
-						onBook={() => openDrawer(<BookLectureDrawer course={course} />)}
+			{!isLoading && (
+				<div className="mb-8 flex flex-col md:flex-row gap-4">
+					<input
+						type="text"
+						placeholder="Search courses..."
+						className="p-3 rounded-lg flex-1"
+						style={{
+							backgroundColor: appTheme[theme].surface.primary,
+							border: `1px solid ${appTheme[theme].neutral[200]}`,
+						}}
 					/>
-				))}
-			</div>
+					<select
+						className="p-3 rounded-lg"
+						style={{
+							backgroundColor: appTheme[theme].surface.primary,
+							border: `1px solid ${appTheme[theme].neutral[200]}`,
+						}}
+					>
+						<option>All Categories</option>
+						<option>Blockchain</option>
+						<option>Programming</option>
+						<option>Mathematics</option>
+					</select>
+				</div>
+			)}
+
+			{/* Loading state */}
+			{isLoading && <SkeletonLoader theme={theme} cardCount={6} />}
+
+			{/* Error state */}
+			{isError && (
+				<div
+					className="text-center py-8"
+					style={{ color: appTheme[theme].status.error }}
+				>
+					Failed to load courses. Please try again later.
+				</div>
+			)}
+
+			{/* Success state */}
+			{!isLoading && !isError && (
+				<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+					{sessions?.map((session) => (
+						<DiscoverCourseCard
+							key={session.id}
+							session={session}
+							theme={theme}
+							onBook={() => openDrawer(<BookLectureDrawer course={session} />)}
+						/>
+					))}
+				</div>
+			)}
+
+			{/* Empty state */}
+			{!isLoading && !isError && sessions?.length === 0 && (
+				<div className="text-center py-8">
+					No courses available at the moment.
+				</div>
+			)}
 		</div>
 	);
 };
