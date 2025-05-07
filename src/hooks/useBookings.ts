@@ -10,6 +10,7 @@ const useBookings = () => {
         queryKey: ['bookings', currentUser?.id],
         queryFn: async () => {
             const response = await axios.get(`${baseUrl}/bookings/user/${currentUser?.id}`);
+            console.log(response.data.data, "bookings-------");
             return response.data;
         },
       enabled: !!currentUser?.id,

@@ -45,17 +45,10 @@ const BookLectureDrawer: React.FC<BookLectureDrawerProps> = ({ course }) => {
 	const [genericLocation, setGenericLocation] = useState<string>("");
 	const { currentUser } = useUserStore((state) => state);
 	const [isLoading, setIsLoading] = useState<boolean>(false);
-	const { openDrawer, closeModal } = useModal();
+	const { closeModal } = useModal();
 
 	const handleSubmit = async () => {
 		setIsLoading(true);
-		console.log({
-			location: selectedLocation,
-			date: selectedDate,
-			time: selectedTime,
-			studentid: currentUser?.id,
-			tutorid: course?.tutor.id,
-		});
 		const payload = {
 			location: selectedLocation,
 			date: selectedDate,
@@ -70,7 +63,7 @@ const BookLectureDrawer: React.FC<BookLectureDrawerProps> = ({ course }) => {
 				console.log(response.data.data);
 				toast.success(response.data.message);
 				setIsLoading(false);
-				closeModal()
+				closeModal();
 				return;
 			}
 			toast.error(response.data.message);

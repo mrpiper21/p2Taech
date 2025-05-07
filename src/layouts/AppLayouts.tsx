@@ -22,12 +22,13 @@ import { useMemo, useState } from "react";
 import { appTheme } from "../constant/theme";
 import useAppStore from "../store/useAppStore";
 import useBookings from "../hooks/useBookings";
+import Logo3d from "../assets/Logo3d";
 
 const AppLayout = () => {
 	const [isSidebarOpen, setIsSidebarOpen] = useState(true);
 	const [isProfileMenuOpen, setIsProfileMenuOpen] = useState(false);
 	const { theme, setTheme } = useAppStore(["theme", "setTheme"]);
-	const { data: bookingsData, isLoading, isError } = useBookings();
+	const { data: bookingsData, isLoading } = useBookings();
 
 	const getUpcomingSessions = () => {
 		if (!bookingsData?.data?.tutorBookings) return [];
@@ -54,10 +55,6 @@ const AppLayout = () => {
 
 	const dueSessions = useMemo(getUpcomingSessions, [bookingsData]);
 
-	console.log("due Sessions ----- ", dueSessions);
-
-	console.log("booking data ------------------", bookingsData);
-
 	const navigation = [
 		{ name: "Dashboard", href: "/home", icon: FiHome },
 		{ name: "Discover Courses", href: "/home/discover", icon: FiBook },
@@ -76,15 +73,17 @@ const AppLayout = () => {
 			<aside
 				className={`${
 					isSidebarOpen ? "w-64 translate-x-0" : "-translate-x-full"
-				} fixed md:relative md:translate-x-0 md:w-64 z-30 transition-all duration-300 ease-in-out h-screen scrollbar-hide`}
+				} fixed md:fixed top-0 left-0 h-screen z-30 transition-all duration-300 ease-in-out scrollbar-hide`}
 				style={{
 					backgroundColor: appTheme[theme].base.secondary,
 					color: appTheme.text.primary,
 				}}
 			>
 				<div className={`${isSidebarOpen ? "block" : "hidden"} p-4 h-screen`}>
-					{/* Logo */}
-					<div className="flex items-center justify-between mb-8">
+					<div className="gap-3 flex items-center justify-center mb-8">
+						<div className="h-20 w-20">
+							<Logo3d />
+						</div>
 						<h1
 							className="text-xl font-bold"
 							style={{ color: appTheme[theme].accent.primary }}
@@ -151,7 +150,7 @@ const AppLayout = () => {
 			</aside>
 
 			{/* Main Content */}
-			<div className="flex-1 flex flex-col">
+			<div className="flex-1 flex flex-col md:ml-64">
 				{/* Navbar */}
 				<header
 					className="sticky top-0 z-20 p-4 flex flex-col md:flex-row gap-4 md:gap-0 items-center justify-between"
