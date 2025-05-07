@@ -1,8 +1,16 @@
-import React, { useState } from 'react'
-import useAppStore from '../../../../store/useAppStore'
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import React, { useEffect, useState } from "react";
+import useAppStore from "../../../../store/useAppStore";
 import { FiCalendar, FiClock, FiMapPin, FiCheck, FiUser } from "react-icons/fi";
 import { appTheme } from "../../../../constant/theme";
 import { SessionAttributes } from "../../../../components/cards/discover-course-card";
+import { FormInput } from "../../../../components/form/FormInput";
+import { AuthButton } from "../../../AuthPages/components/auth-button";
+import useUserStore from "../../../../store/useUserStore";
+import axios from "axios";
+import { baseUrl } from "../../../../apis";
+import { toast } from "react-toastify";
+import { useModal } from "../../../../hooks/useModal";
 
 const availableLocations = [
 	"Valco Hall",
@@ -10,6 +18,7 @@ const availableLocations = [
 	"Lugard Library",
 	"Kingsley summer hut",
 	"Main Auditorium",
+	"Other",
 ];
 
 const timeSlots = [
@@ -33,18 +42,58 @@ const BookLectureDrawer: React.FC<BookLectureDrawerProps> = ({ course }) => {
 	const [selectedLocation, setSelectedLocation] = useState<string>("");
 	const [selectedDate, setSelectedDate] = useState<string>("");
 	const [selectedTime, setSelectedTime] = useState<string>("");
+	const [genericLocation, setGenericLocation] = useState<string>("");
+	const { currentUser } = useUserStore((state) => state);
+	const [isLoading, setIsLoading] = useState<boolean>(false);
+	const { openDrawer, closeModal } = useModal();
 
-	const handleSubmit = () => {
+	const handleSubmit = async () => {
+		setIsLoading(true);
 		console.log({
 			location: selectedLocation,
 			date: selectedDate,
 			time: selectedTime,
+			studentid: currentUser?.id,
+			tutorid: course?.tutor.id,
 		});
+		const payload = {
+			location: selectedLocation,
+			date: selectedDate,
+			time: selectedTime,
+			studentid: currentUser?.id,
+			tutorid: course?.tutor.id,
+		};
+		try {
+			const response = await axios.post(`${baseUrl}/bookings/create`, payload);
+
+			if (response.data.success) {
+				console.log(response.data.data);
+				toast.success(response.data.message);
+				setIsLoading(false);
+				closeModal()
+				return;
+			}
+			toast.error(response.data.message);
+			return;
+		} catch (error) {
+			console.log(error);
+		}
 	};
+
+	const handleOnGenericChange = (_text: any) => {
+		setGenericLocation(_text);
+	};
+
+	useEffect(() => {
+		if (selectedLocation === "Other") {
+			const input = document.getElementById("location-input");
+			input?.focus();
+		}
+	}, [selectedLocation]);
 
 	return (
 		<div
-			className="w-full h-full flex flex-col p-6"
+			className="w-[45dvw] h-full flex flex-col p-6"
 			style={{
 				backgroundColor: appTheme[theme].surface.primary,
 				color:
@@ -71,7 +120,7 @@ const BookLectureDrawer: React.FC<BookLectureDrawerProps> = ({ course }) => {
 										size={16}
 										style={{ color: appTheme[theme].accent.primary }}
 									/>
-									<span className="text-sm">{course.id}</span>
+									<span className="text-sm">{course.tutor.name}</span>
 								</div>
 								<span className="font-medium">GHS{course.price}</span>
 							</div>
@@ -80,7 +129,7 @@ const BookLectureDrawer: React.FC<BookLectureDrawerProps> = ({ course }) => {
 									size={16}
 									style={{ color: appTheme[theme].accent.primary }}
 								/>
-								<span className="text-sm">{course.duration}</span>
+								<span className="text-sm">{course.duration} hours</span>
 							</div>
 						</div>
 					</div>
@@ -88,9 +137,9 @@ const BookLectureDrawer: React.FC<BookLectureDrawerProps> = ({ course }) => {
 			</div>
 
 			{/* Form Section */}
-			<div className="flex-1 overflow-y-auto pr-2">
+			<div className="flex-1 min-h-0 flex flex-col">
 				{/* Location Selection */}
-				<div className="mb-6">
+				<div className="flex-1 overflow-y-auto pr-2 pb-4">
 					<div className="flex items-center gap-2 mb-3">
 						<FiMapPin
 							size={20}
@@ -123,6 +172,17 @@ const BookLectureDrawer: React.FC<BookLectureDrawerProps> = ({ course }) => {
 								)}
 							</button>
 						))}
+						{selectedLocation == "Other" && (
+							<FormInput
+								label="Specify Location *"
+								name="Location"
+								theme={theme}
+								placeholder="Type Location here..."
+								value={genericLocation}
+								onChange={(e) => handleOnGenericChange(e.target.value)}
+								type="text"
+							/>
+						)}
 					</div>
 				</div>
 
@@ -189,19 +249,16 @@ const BookLectureDrawer: React.FC<BookLectureDrawerProps> = ({ course }) => {
 				className="pt-4 border-t"
 				style={{ borderColor: appTheme[theme].neutral[200] }}
 			>
-				<button
-					onClick={handleSubmit}
+				<AuthButton
+					label="Confirm Booking"
 					disabled={!selectedLocation || !selectedDate || !selectedTime}
-					className="w-full py-3 rounded-lg font-semibold transition-opacity disabled:opacity-50"
-					style={{
-						backgroundColor: appTheme[theme].accent.primary,
-					}}
-				>
-					Confirm Booking
-				</button>
+					type="submit"
+					isLoading={isLoading}
+					onClick={handleSubmit}
+				/>
 			</div>
 		</div>
 	);
 };
 
-export default BookLectureDrawer
+export default BookLectureDrawer;

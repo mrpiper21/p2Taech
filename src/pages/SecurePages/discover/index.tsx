@@ -99,7 +99,11 @@ const DiscoverCourses = () => {
 							key={session.id}
 							session={session}
 							theme={theme}
-							onBook={() => openDrawer(<BookLectureDrawer course={session} />)}
+							onBook={() =>
+								openDrawer(<BookLectureDrawer course={session} />, {
+									containerStyle: { overflowY: "auto" },
+								})
+							}
 						/>
 					))}
 				</div>

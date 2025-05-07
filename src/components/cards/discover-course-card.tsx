@@ -3,6 +3,7 @@
 import Logo3d from "../../assets/Logo3d";
 import { appTheme } from "../../constant/theme";
 import { FiClock, FiUser } from "react-icons/fi";
+import { AuthButton } from "../../pages/AuthPages/components/auth-button";
 
 export interface SessionAttributes {
 	id?: number;
@@ -98,16 +99,7 @@ const DiscoverCourseCard = ({ session, onBook, theme }: SessionCardProps) => {
 				className="border-t p-4"
 				style={{ borderColor: appTheme[theme].neutral[200] }}
 			>
-				<button
-					onClick={onBook}
-					className="w-full py-3 rounded-lg font-semibold transition-all hover:opacity-90"
-					style={{
-						backgroundColor: appTheme[theme].accent.primary,
-						color: appTheme.text.inverted,
-					}}
-				>
-					Book Now
-				</button>
+				<AuthButton onClick={onBook} label="Book Now" type="button" />
 			</div>
 		</div>
 	);

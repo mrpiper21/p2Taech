@@ -6,7 +6,7 @@ interface AuthButtonProps {
 	type: "submit" | "button";
 	disabled?: boolean;
 	isLoading?: boolean;
-	label: string;
+	label?: string;
 	onClick?: () => void;
 }
 
@@ -74,7 +74,7 @@ export const AuthButton = ({
 					))}
 				</motion.div>
 			) : (
-				<span className="text-white">{label}</span>
+				<>{label && <span className="text-white">{label}</span>}</>
 			)}
 
 			{/* Subtle shimmer effect */}

@@ -29,29 +29,31 @@ const SlideShowText = ({theme}: Props) => {
   if (!visible) return null;
 
   return (
-    <div className="relative bg-opacity-10 rounded-lg p-4 mb-8"
-      style={{ backgroundColor: appTheme[theme].neutral[100] }}>
-      <AnimatePresence mode='wait'>
-        <motion.div
-          key={activeText}
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          exit={{ opacity: 0, y: -10 }}
-          transition={{ duration: 0.3 }}
-          className="text-center text-sm italic text-gray-600"
-        >
-          {slides[activeText]}
-        </motion.div>
-      </AnimatePresence>
-      
-      <button 
-        onClick={() => setVisible(false)}
-        className="absolute top-2 right-2 hover:opacity-70 transition-opacity"
-      >
-        <FiXCircle className="w-4 h-4 text-gray-500" />
-      </button>
-    </div>
-  );
+		<div
+			className="relative items-center gap-4 bg-opacity-10 rounded-lg p-4 mb-8"
+			style={{ backgroundColor: appTheme[theme].neutral[100] }}
+		>
+			<AnimatePresence mode="wait">
+				<motion.div
+					key={activeText}
+					initial={{ opacity: 0, y: 10 }}
+					animate={{ opacity: 1, y: 0 }}
+					exit={{ opacity: 0, y: -10 }}
+					transition={{ duration: 0.3 }}
+					className="text-center text-sm italic text-gray-600"
+				>
+					{slides[activeText]}
+				</motion.div>
+			</AnimatePresence>
+
+			<button
+				onClick={() => setVisible(false)}
+				className="absolute top-2 right-1 hover:opacity-70 transition-opacity"
+			>
+				<FiXCircle className="w-4 h-4 text-gray-500" />
+			</button>
+		</div>
+	);
 };
 
 export default SlideShowText
