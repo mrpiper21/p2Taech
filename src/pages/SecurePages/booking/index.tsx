@@ -104,7 +104,7 @@ const Bookings = () => {
 			>
 				<button
 					onClick={() => setActiveTab("upcoming")}
-					className={`px-4 py-2 text-sm font-medium transition-colors ${
+					className={`px-4 hover:cursor-pointer py-2 text-sm font-medium transition-colors ${
 						activeTab === "upcoming" ? "border-b-2" : ""
 					}`}
 					style={{
@@ -122,7 +122,7 @@ const Bookings = () => {
 				</button>
 				<button
 					onClick={() => setActiveTab("past")}
-					className={`px-4 py-2 text-sm font-medium transition-colors ${
+					className={`px-4 hover:cursor-pointer py-2 text-sm font-medium transition-colors ${
 						activeTab === "past" ? "border-b-2" : ""
 					}`}
 					style={{
@@ -210,15 +210,19 @@ const Bookings = () => {
 
 									<div className="mt-4 flex gap-2">
 										<button
-											className="px-4 py-2 rounded-lg text-sm font-medium transition-colors"
+											className="px-4 hover:cursor-pointer py-2 rounded-lg text-sm font-medium transition-colors"
 											style={{
 												backgroundColor: appTheme[theme].accent.primary,
+												color:
+													theme === "light"
+														? appTheme.text.primary
+														: appTheme.text.inverted,
 											}}
 										>
 											View Details
 										</button>
 										<button
-											className="px-4 py-2 rounded-lg text-sm font-medium transition-colors"
+											className="px-4 hover:cursor-pointer py-2 rounded-lg text-sm font-medium transition-colors"
 											style={{
 												backgroundColor: appTheme[theme].surface.secondary,
 											}}
@@ -287,10 +291,13 @@ const Bookings = () => {
 
 								<div className="mt-4">
 									<button
-										className="w-full px-4 py-2 rounded-lg text-sm font-medium transition-colors"
+										className="w-full hover:cursor-pointer px-4 py-2 rounded-lg text-sm font-medium transition-colors"
 										style={{
 											backgroundColor: appTheme[theme].surface.secondary,
-											color: appTheme.text.primary,
+											color:
+												theme === "light"
+													? appTheme.text.primary
+													: appTheme.text.inverted,
 										}}
 									>
 										View Details

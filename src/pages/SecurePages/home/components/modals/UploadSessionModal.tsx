@@ -1,3 +1,4 @@
+import { motion } from "framer-motion";
 import useAppStore from "../../../../../store/useAppStore";
 import { FiClock, FiBook } from "react-icons/fi";
 import { appTheme } from "../../../../../constant/theme";
@@ -7,12 +8,41 @@ import axios from "axios";
 import { toast } from "react-toastify";
 import useUserStore from "../../../../../store/useUserStore";
 
+// Animation variants
+const modalVariants = {
+	hidden: {
+		opacity: 0,
+		y: 20,
+		scale: 0.95,
+	},
+	visible: {
+		opacity: 1,
+		y: 0,
+		scale: 1,
+		transition: {
+			type: "spring",
+			stiffness: 300,
+			damping: 20,
+			duration: 0.3,
+		},
+	},
+};
+
+const itemVariants = {
+	hidden: { opacity: 0, y: 10 },
+	visible: { opacity: 1, y: 0 },
+};
+
+const buttonVariants = {
+	hover: { scale: 1.02 },
+	tap: { scale: 0.98 },
+};
+
 const UploadSessionModal = () => {
 	const { theme } = useAppStore(["theme"]);
 	const [durationUnit, setDurationUnit] = useState("hours");
 	const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
-  const {currentUser} = useUserStore((state) => state)
-	// Add state management for form fields
+	const { currentUser } = useUserStore((state) => state);
 	const [formData, setFormData] = useState({
 		title: "",
 		subject: "",
@@ -35,13 +65,9 @@ const UploadSessionModal = () => {
 
 			if (response.status === 201) {
 				toast.success(response.data.message || "Session created successfully!");
-				// Optional: Reset form or redirect
-				// setFormData(initialFormState);
-				// navigate('/sessions');
 			}
 		} catch (error) {
 			console.error("Error creating session:", error);
-
 			if (axios.isAxiosError(error)) {
 				const errorMessage =
 					error.response?.data?.message || "Failed to create session";
@@ -55,7 +81,10 @@ const UploadSessionModal = () => {
 	};
 
 	return (
-		<div
+		<motion.div
+			initial="hidden"
+			animate="visible"
+			variants={modalVariants}
 			className="p-6 rounded-lg w-full max-w-md"
 			style={{
 				backgroundColor: appTheme[theme].surface.primary,
@@ -64,12 +93,24 @@ const UploadSessionModal = () => {
 			}}
 		>
 			<div className="flex justify-center items-center mb-6">
-				<h2 className="text-xl font-semibold">Create New Session</h2>
+				<motion.h2 className="text-xl font-semibold" variants={itemVariants}>
+					Create New Session
+				</motion.h2>
 			</div>
 
-			<form onSubmit={handleSubmit} className="space-y-6">
+			<motion.form
+				onSubmit={handleSubmit}
+				className="space-y-6"
+				variants={{
+					visible: {
+						transition: {
+							staggerChildren: 0.1,
+						},
+					},
+				}}
+			>
 				{/* Course Title */}
-				<div>
+				<motion.div variants={itemVariants}>
 					<label className="block text-sm font-medium mb-2">
 						Course Title *
 					</label>
@@ -79,10 +120,10 @@ const UploadSessionModal = () => {
 							className="absolute left-3 top-1/2 -translate-y-1/2"
 							style={{ color: appTheme[theme].neutral[400] }}
 						/>
-						<input
+						<motion.input
 							type="text"
 							required
-							className="w-full pl-10 pr-4 py-3 rounded-lg"
+							className="w-full pl-10 pr-4 py-3 rounded-lg transition-colors duration-200"
 							style={{
 								backgroundColor: appTheme[theme].surface.secondary,
 								border: `1px solid ${appTheme[theme].neutral[200]}`,
@@ -94,16 +135,16 @@ const UploadSessionModal = () => {
 							}
 						/>
 					</div>
-				</div>
+				</motion.div>
 
 				{/* Subject */}
-				<div>
+				<motion.div variants={itemVariants}>
 					<label className="block text-sm font-medium mb-2">Subject *</label>
 					<div className="relative">
-						<input
+						<motion.input
 							type="text"
 							required
-							className="w-full px-4 py-3 rounded-lg"
+							className="w-full px-4 py-3 rounded-lg transition-colors duration-200"
 							style={{
 								backgroundColor: appTheme[theme].surface.secondary,
 								border: `1px solid ${appTheme[theme].neutral[200]}`,
@@ -115,19 +156,21 @@ const UploadSessionModal = () => {
 							}
 						/>
 					</div>
-				</div>
+				</motion.div>
 
 				{/* Price and Duration */}
-				<div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+				<motion.div
+					className="grid grid-cols-1 md:grid-cols-2 gap-4"
+					variants={itemVariants}
+				>
 					{/* Amount */}
 					<div>
 						<label className="block text-sm font-medium mb-2">Price *</label>
 						<div className="relative">
-							{/* <span>GHS </span> */}
-							<input
+							<motion.input
 								type="number"
 								required
-								className="w-full pl-10 pr-4 py-3 rounded-lg"
+								className="w-full pl-10 pr-4 py-3 rounded-lg transition-colors duration-200"
 								style={{
 									backgroundColor: appTheme[theme].surface.secondary,
 									border: `1px solid ${appTheme[theme].neutral[200]}`,
@@ -150,10 +193,10 @@ const UploadSessionModal = () => {
 								className="absolute left-3 top-1/2 -translate-y-1/2"
 							/>
 							<div className="flex gap-2">
-								<input
+								<motion.input
 									type="number"
 									required
-									className="w-full pl-10 pr-4 py-3 rounded-lg"
+									className="w-full pl-10 pr-4 py-3 rounded-lg transition-colors duration-200"
 									style={{
 										backgroundColor: appTheme[theme].surface.secondary,
 										border: `1px solid ${appTheme[theme].neutral[200]}`,
@@ -164,8 +207,8 @@ const UploadSessionModal = () => {
 										setFormData({ ...formData, duration: e.target.value })
 									}
 								/>
-								<select
-									className="rounded-lg px-3"
+								<motion.select
+									className="rounded-lg px-3 transition-colors duration-200"
 									style={{
 										backgroundColor: appTheme[theme].surface.secondary,
 										border: `1px solid ${appTheme[theme].neutral[200]}`,
@@ -176,32 +219,41 @@ const UploadSessionModal = () => {
 									<option value="hours">Hours</option>
 									<option value="days">Days</option>
 									<option value="weeks">Weeks</option>
-								</select>
+								</motion.select>
 							</div>
 						</div>
 					</div>
-				</div>
+				</motion.div>
 
 				{/* Action Buttons */}
-				<div className="flex gap-4">
-					<AuthButton
-						isLoading={isSubmitting}
-						label="Create Session"
-						type="submit"
-					/>
-					<button
+				<motion.div className="flex gap-4" variants={itemVariants}>
+					<motion.div
+						variants={buttonVariants}
+						whileHover="hover"
+						whileTap="tap"
+					>
+						<AuthButton
+							isLoading={isSubmitting}
+							label="Create Session"
+							type="submit"
+						/>
+					</motion.div>
+					<motion.button
 						type="button"
-						className="flex-1 px-4 py-3 rounded-lg font-semibold"
+						className="flex-1 px-4 py-3 rounded-lg font-semibold transition-colors duration-200 hover:brightness-95"
 						style={{
 							backgroundColor: appTheme[theme].surface.secondary,
 							border: `1px solid ${appTheme[theme].neutral[200]}`,
 						}}
+						variants={buttonVariants}
+						whileHover="hover"
+						whileTap="tap"
 					>
 						Cancel
-					</button>
-				</div>
-			</form>
-		</div>
+					</motion.button>
+				</motion.div>
+			</motion.form>
+		</motion.div>
 	);
 };
 

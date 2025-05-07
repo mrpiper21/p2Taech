@@ -3,7 +3,6 @@ import { Link, Outlet } from "react-router-dom";
 import {
 	FiHome,
 	FiUsers,
-	FiSettings,
 	FiMenu,
 	FiX,
 	FiSearch,
@@ -11,10 +10,7 @@ import {
 	FiMoon,
 	FiSun,
 	FiBook,
-	FiBookmark,
 	FiVideo,
-	FiFileText,
-	FiDollarSign,
 	FiBookOpen,
 	FiAlertCircle,
 } from "react-icons/fi";
@@ -58,13 +54,13 @@ const AppLayout = () => {
 	const navigation = [
 		{ name: "Dashboard", href: "/home", icon: FiHome },
 		{ name: "Discover Courses", href: "/home/discover", icon: FiBook },
-		{ name: "My Learning", href: "/my-learning", icon: FiBookmark },
+		// { name: "My Learning", href: "/my-learning", icon: FiBookmark },
 		{ name: "Bookings", href: "/home/bookings", icon: FiBookOpen },
-		{ name: "Live Sessions", href: "/live", icon: FiVideo },
+		// { name: "Live Sessions", href: "/live", icon: FiVideo },
 		{ name: "Study Groups", href: "/groups", icon: FiUsers },
-		{ name: "Resource Library", href: "/resources", icon: FiFileText },
-		{ name: "Wallet", href: "/wallet", icon: FiDollarSign },
-		{ name: "Settings", href: "/settings", icon: FiSettings },
+		// { name: "Resource Library", href: "/resources", icon: FiFileText },
+		// { name: "Wallet", href: "/wallet", icon: FiDollarSign },
+		// { name: "Settings", href: "/settings", icon: FiSettings },
 	];
 
 	return (
