@@ -10,6 +10,7 @@ import registerRoute from "./auth/register";
 import SecuredRoute from "../components/auth/securedRoutes";
 import PublicRoute from "../components/auth/publicRoute";
 import { AuthButton } from "../pages/AuthPages/components/auth-button";
+import Providers from "../layouts/Provideders";
 
 // const ProfilePage = lazy(() => import("../pages/App/Profile"));
 // const ErrorPage = lazy(() => import("../pages/Error"));
@@ -46,7 +47,9 @@ const router = createBrowserRouter([
 		path: "/home/*",
 		element: (
 			<SecuredRoute>
-				<AppLayout />
+				<Providers>
+					<AppLayout />
+				</Providers>
 			</SecuredRoute>
 		),
 		children: protectedRoutes,

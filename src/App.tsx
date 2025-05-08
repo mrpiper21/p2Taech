@@ -1,34 +1,8 @@
 import { RouterProvider } from 'react-router-dom';
-import router from './routes';
-import { ToastContainer } from "react-toastify";
-import useAppStore from "./store/useAppStore";
-import { appTheme } from "./constant/theme";
-import { ModalProvider } from "./components/modal-provider";
-import AuthInitializer from "./pages/AuthPages/components/auth-initializer";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import router from "./routes";
 
 function App() {
-	const { theme } = useAppStore(["theme"]);
-	const queryClient = new QueryClient();
-
-	return (
-		<QueryClientProvider client={queryClient}>
-			<AuthInitializer>
-				<ModalProvider>
-					<RouterProvider router={router} />
-					<ToastContainer
-						position="bottom-right"
-						toastStyle={{
-							backgroundColor: appTheme[theme].surface.primary,
-							color: appTheme.text.primary,
-							border: `1px solid ${appTheme[theme].neutral[200]}`,
-							boxShadow: appTheme.shadows.md,
-						}}
-					/>
-				</ModalProvider>
-			</AuthInitializer>
-		</QueryClientProvider>
-	);
+	return <RouterProvider router={router} />;
 }
 
 export default App;
