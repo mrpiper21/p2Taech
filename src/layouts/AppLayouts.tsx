@@ -19,6 +19,7 @@ import { appTheme } from "../constant/theme";
 import useAppStore from "../store/useAppStore";
 import useBookings from "../hooks/useBookings";
 import Logo3d from "../assets/Logo3d";
+import Wallet from "../components/Wallet";
 
 const AppLayout = () => {
 	const [isSidebarOpen, setIsSidebarOpen] = useState(true);
@@ -210,20 +211,7 @@ const AppLayout = () => {
 
 						{/* Desktop Profile Section */}
 						<div className="hidden md:flex items-center gap-4">
-							<div
-								className="flex hover:cursor-pointer gap-2 items-center py-2 px-4 rounded-full"
-								style={{
-									backgroundColor: appTheme[theme].surface.secondary,
-								}}
-							>
-								<FiPocket color={appTheme[theme].accent.secondary} size={24} />
-								<span
-									style={{ color: appTheme[theme].neutral[500] }}
-									className="text-sm"
-								>
-									0x748s4..
-								</span>
-							</div>
+							<Wallet />
 							<div className="relative">
 								<button
 									onClick={() => setIsProfileMenuOpen(!isProfileMenuOpen)}

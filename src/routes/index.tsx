@@ -11,6 +11,7 @@ import SecuredRoute from "../components/auth/securedRoutes";
 import PublicRoute from "../components/auth/publicRoute";
 import { AuthButton } from "../pages/AuthPages/components/auth-button";
 import Providers from "../layouts/Provideders";
+import Wallet from "../components/Wallet";
 
 // const ProfilePage = lazy(() => import("../pages/App/Profile"));
 // const ErrorPage = lazy(() => import("../pages/Error"));
@@ -18,12 +19,7 @@ import Providers from "../layouts/Provideders";
 const router = createBrowserRouter([
 	{
 		path: "/",
-		element: (
-			<div className="flex h-screen px-[40dvw] space-y-4 flex-col  flex-1 items-center justify-center">
-				<AuthButton type="button" label="Login" />
-				<AuthButton type="button" label="Register" />
-			</div>
-		),
+		element: <Wallet />,
 	},
 	{
 		path: "/login/*",

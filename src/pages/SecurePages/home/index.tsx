@@ -5,11 +5,13 @@ import StatCard from "../../../components/cards/StatCard";
 import { DashboardHeader } from "./components/dashboardHeader";
 import { CoursesSection } from "./components/courseSection";
 import { TransactionsSection } from "./components/transactionSection";
+import { useWalletStore } from "../../../store/useWalletStore";
 
 const HomePage = () => {
 	const { theme } = useAppStore(["theme"]);
 
 	const stats = { bookings: 24, earnings: 2540.5, rating: 4.8, students: 58 };
+	const { balance } = useWalletStore();
 
 	const courses = [
 		{
@@ -55,7 +57,7 @@ const HomePage = () => {
 				<StatCard
 					icon={<FiDollarSign />}
 					title="Earnings"
-					value={`GHS ${stats.earnings.toFixed(2)}`}
+					value={`${parseFloat(balance || "N/A").toFixed(4) + "Eth"}`}
 					theme={theme}
 				/>
 				<StatCard
