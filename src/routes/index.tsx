@@ -9,7 +9,6 @@ import loginRoute from "./auth/login";
 import registerRoute from "./auth/register";
 import SecuredRoute from "../components/auth/securedRoutes";
 import PublicRoute from "../components/auth/publicRoute";
-import { AuthButton } from "../pages/AuthPages/components/auth-button";
 import Providers from "../layouts/Provideders";
 import Wallet from "../components/Wallet";
 

@@ -11,12 +11,15 @@ import {
 import { appTheme } from "../../../constant/theme";
 import { useBookingStore } from "../../../store/useBookingStore";
 import useUserStore from "../../../store/useUserStore";
+import { useModal } from "../../../hooks/useModal";
+import BookingDetailsDrawer from "./modals/BookingDetailsDrawer";
 
 const Bookings = () => {
 	const { theme } = useAppStore(["theme"]);
 	const { bookings, loading, error, fetchBookings } = useBookingStore();
 	const { currentUser } = useUserStore((state) => state);
 	const [activeTab, setActiveTab] = useState<"upcoming" | "past">("upcoming");
+	const { openDrawer } = useModal();
 
 	const groupedBookings = useMemo(() => {
 		const now = new Date();
@@ -210,6 +213,11 @@ const Bookings = () => {
 
 									<div className="mt-4 flex gap-2">
 										<button
+											onClick={() =>
+												openDrawer(
+													<BookingDetailsDrawer bookingId={booking?.id} />
+												)
+											}
 											className="px-4 hover:cursor-pointer py-2 rounded-lg text-sm font-medium transition-colors"
 											style={{
 												backgroundColor: appTheme[theme].accent.primary,
@@ -224,10 +232,15 @@ const Bookings = () => {
 										<button
 											className="px-4 hover:cursor-pointer py-2 rounded-lg text-sm font-medium transition-colors"
 											style={{
-												backgroundColor: appTheme[theme].surface.secondary,
+												backgroundColor:
+													currentUser?.id !== booking.tutorid
+														? appTheme[theme].status.error
+														: appTheme[theme].surface.secondary,
 											}}
 										>
-											Reschedule
+											{currentUser?.id === booking.tutorid
+												? "Reschedule"
+												: "Cancel"}
 										</button>
 									</div>
 								</div>
@@ -291,6 +304,7 @@ const Bookings = () => {
 
 								<div className="mt-4">
 									<button
+										onClick={() => open}
 										className="w-full hover:cursor-pointer px-4 py-2 rounded-lg text-sm font-medium transition-colors"
 										style={{
 											backgroundColor: appTheme[theme].surface.secondary,

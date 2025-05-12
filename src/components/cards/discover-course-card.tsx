@@ -12,6 +12,7 @@ export interface SessionAttributes {
 	subjectitle: string;
 	price: number;
 	duration: number;
+	walletaddress: string;
 	created_at?: Date;
 	updated_at?: Date;
 	tutor: {
@@ -31,7 +32,7 @@ interface SessionCardProps {
 const DiscoverCourseCard = ({ session, onBook, theme }: SessionCardProps) => {
 	return (
 		<div
-			className="rounded-xl min-w-[300px] overflow-hidden flex flex-col h-full border"
+			className="rounded-xl min-w-[350px] flex flex-col h-full border"
 			style={{
 				backgroundColor: appTheme[theme].surface.primary,
 				borderColor: appTheme[theme].neutral[200],

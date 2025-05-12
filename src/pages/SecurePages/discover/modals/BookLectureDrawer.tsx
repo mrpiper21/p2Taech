@@ -11,6 +11,7 @@ import axios from "axios";
 import { baseUrl } from "../../../../apis";
 import { toast } from "react-toastify";
 import { useModal } from "../../../../hooks/useModal";
+import { useWalletStore } from "../../../../store/useWalletStore";
 
 const availableLocations = [
 	"Valco Hall",
@@ -45,9 +46,16 @@ const BookLectureDrawer: React.FC<BookLectureDrawerProps> = ({ course }) => {
 	const [genericLocation, setGenericLocation] = useState<string>("");
 	const { currentUser } = useUserStore((state) => state);
 	const [isLoading, setIsLoading] = useState<boolean>(false);
+	const { account } = useWalletStore();
 	const { closeModal } = useModal();
 
+	console.log("course ------ ", course);
+
 	const handleSubmit = async () => {
+		if (account.length < 1) {
+			toast.warn("Make sure your wallet is connected!");
+			return;
+		}
 		setIsLoading(true);
 		const payload = {
 			location: selectedLocation,
@@ -55,6 +63,8 @@ const BookLectureDrawer: React.FC<BookLectureDrawerProps> = ({ course }) => {
 			time: selectedTime,
 			studentid: currentUser?.id,
 			tutorid: course?.tutor.id,
+			tutorwalletaddress: course?.walletaddress,
+			studentwalletaddress: account,
 		};
 		try {
 			const response = await axios.post(`${baseUrl}/bookings/create`, payload);

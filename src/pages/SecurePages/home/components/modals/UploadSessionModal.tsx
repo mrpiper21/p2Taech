@@ -7,6 +7,7 @@ import { AuthButton } from "../../../../AuthPages/components/auth-button";
 import axios from "axios";
 import { toast } from "react-toastify";
 import useUserStore from "../../../../../store/useUserStore";
+import { useWalletStore } from "../../../../../store/useWalletStore";
 
 // Animation variants
 const modalVariants = {
@@ -43,6 +44,7 @@ const UploadSessionModal = () => {
 	const [durationUnit, setDurationUnit] = useState("hours");
 	const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
 	const { currentUser } = useUserStore((state) => state);
+	const { account } = useWalletStore();
 	const [formData, setFormData] = useState({
 		title: "",
 		subject: "",
@@ -54,6 +56,8 @@ const UploadSessionModal = () => {
 		e.preventDefault();
 		setIsSubmitting(true);
 
+		console.log("wallet address  ---", account);
+
 		try {
 			const response = await axios.post("http://localhost:3001/api/sessions/", {
 				user_id: currentUser?.id,
@@ -61,6 +65,7 @@ const UploadSessionModal = () => {
 				subjectitle: formData.subject,
 				price: formData.amount,
 				duration: formData.duration,
+				walletaddress: account,
 			});
 
 			if (response.status === 201) {
