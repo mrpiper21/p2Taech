@@ -8,6 +8,7 @@ import axios from "axios";
 import { toast } from "react-toastify";
 import useUserStore from "../../../../../store/useUserStore";
 import { useWalletStore } from "../../../../../store/useWalletStore";
+import { useModal } from "../../../../../hooks/useModal";
 
 // Animation variants
 const modalVariants = {
@@ -45,6 +46,7 @@ const UploadSessionModal = () => {
 	const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
 	const { currentUser } = useUserStore((state) => state);
 	const { account } = useWalletStore();
+	const { closeModal } = useModal();
 	const [formData, setFormData] = useState({
 		title: "",
 		subject: "",
@@ -70,6 +72,7 @@ const UploadSessionModal = () => {
 
 			if (response.status === 201) {
 				toast.success(response.data.message || "Session created successfully!");
+				closeModal();
 			}
 		} catch (error) {
 			console.error("Error creating session:", error);
@@ -244,6 +247,7 @@ const UploadSessionModal = () => {
 						/>
 					</motion.div>
 					<motion.button
+						onClick={closeModal}
 						type="button"
 						className="flex-1 px-4 py-3 rounded-lg font-semibold transition-colors duration-200 hover:brightness-95"
 						style={{
