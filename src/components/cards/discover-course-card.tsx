@@ -32,7 +32,7 @@ interface SessionCardProps {
 const DiscoverCourseCard = ({ session, onBook, theme }: SessionCardProps) => {
 	return (
 		<div
-			className="rounded-xl min-w-[350px] flex flex-col h-full border"
+			className="rounded-xl min-w-[400px] flex flex-col h-full border"
 			style={{
 				backgroundColor: appTheme[theme].surface.primary,
 				borderColor: appTheme[theme].neutral[200],
