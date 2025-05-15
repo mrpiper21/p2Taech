@@ -1,11 +1,9 @@
-/* eslint-disable @typescript-eslint/no-require-imports */
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
-import tailwindcss from "@tailwindcss/vite";
 import path from "path";
 
 export default defineConfig({
-	plugins: [react(), tailwindcss()],
+	plugins: [react()],
 	build: {
 		outDir: "dist",
 		emptyOutDir: true,
@@ -20,10 +18,5 @@ export default defineConfig({
 	server: {
 		port: 3000,
 		open: true,
-	},
-	css: {
-		postcss: {
-			plugins: [require("tailwindcss"), require("autoprefixer")],
-		},
 	},
 });
